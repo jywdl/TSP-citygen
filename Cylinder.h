@@ -1,0 +1,167 @@
+#ifndef CYLINDER_H
+#define CYLINDER_H
+
+#include "Shape.h"
+
+class Cylinder : public Shape {
+public:
+	Cylinder() {};
+	~Cylinder() {};
+
+	OBJ_TYPE getType() {
+		return SHAPE_CYLINDER;
+	}
+
+
+	void draw(float sx, float sy, float sz, float lx, float ly, float lz) {
+
+		vector<vertex> top;
+		vector<vertex> bottom;
+		vector<vertex> sides;
+
+		float r = 0.5f;
+		float theta = 2*PI/m_segmentsX;
+		float y = 1.0 / m_segmentsY;
+
+
+		// top and bottom
+		for (int i = 0; i < m_segmentsX; i++){
+			// top face
+			vertex v1;
+			v1.x = 0;
+			v1.z = 0.5;
+			v1.y = 0;
+			
+			vertex v2;
+			v2.x = r * cosf(i * theta);
+			v2.z = 0.5;
+			v2.y = r * sinf(i * theta);
+			
+			vertex v3;
+			v3.x = r * cosf((i+1) * theta);
+			v3.z = 0.5;
+			v3.y = r * sinf((i+1) * theta);
+
+			v1.x = lx * v1.x + sx;
+			v1.y = ly * v1.y + sy;
+			v1.z = lz * v1.z + sz;
+
+			v2.x = lx * v2.x + sx;
+			v2.y = ly * v2.y + sy;
+			v2.z = lz * v2.z + sz;
+
+			v3.x = lx * v3.x + sx;
+			v3.y = ly * v3.y + sy;
+			v3.z = lz * v3.z + sz;
+
+
+			top.push_back(v1);
+			top.push_back(v2);
+			top.push_back(v3);
+
+			// bottom face
+			v1.x = 0;
+			v1.z = -0.5;
+			v1.y = 0;
+			
+			v2.x = r * cosf(i * theta);
+			v2.z = -0.5;
+			v2.y = r * sinf(i * theta);
+			
+			v3.x = r * cosf((i+1) * theta);
+			v3.z = -0.5;
+			v3.y = r * sinf((i+1) * theta);
+
+			v1.x = lx * v1.x + sx;
+			v1.y = ly * v1.y + sy;
+			v1.z = lz * v1.z + sz;
+
+			v2.x = lx * v2.x + sx;
+			v2.y = ly * v2.y + sy;
+			v2.z = lz * v2.z + sz;
+
+			v3.x = lx * v3.x + sx;
+			v3.y = ly * v3.y + sy;
+			v3.z = lz * v3.z + sz;
+
+			bottom.push_back(v1);
+			bottom.push_back(v2);
+			bottom.push_back(v3);
+		}
+
+		// sides
+		for (int i = 0; i < m_segmentsX; i++){
+			for (int j = 0; j < m_segmentsY; j++){
+				vertex v1;
+				v1.x = r * cosf(i * theta);
+				v1.z = -0.5 + y * j;
+				v1.y = r * sinf(i * theta);
+			
+				vertex v2;
+				v2.x = r * cosf((i + 1) * theta);
+				v2.z = -0.5 + y * j;
+				v2.y = r * sinf((i + 1) * theta);
+			
+				vertex v3;
+				v3.x = r * cosf(i * theta);
+				v3.z = -0.5 + y * (j + 1);
+				v3.y = r * sinf(i * theta);
+
+				vertex v4;
+				v4.x = r * cosf((i + 1) * theta);
+				v4.z = -0.5 + y * (j + 1);
+				v4.y = r * sinf((i + 1) * theta);
+
+				v1.x = lx * v1.x + sx;
+				v1.y = ly * v1.y + sy;
+				v1.z = lz * v1.z + sz;
+
+				v2.x = lx * v2.x + sx;
+				v2.y = ly * v2.y + sy;
+				v2.z = lz * v2.z + sz;
+
+				v3.x = lx * v3.x + sx;
+				v3.y = ly * v3.y + sy;
+				v3.z = lz * v3.z + sz;
+
+				v4.x = lx * v4.x + sx;
+				v4.y = ly * v4.y + sy;
+				v4.z = lz * v4.z + sz;
+
+				sides.push_back(v1);
+				sides.push_back(v2);
+				sides.push_back(v3);
+				sides.push_back(v2);
+				sides.push_back(v4);
+				sides.push_back(v3);
+			}
+		}
+
+
+		glBegin(GL_TRIANGLES);
+
+		for (int i = 0; i < top.size(); i++){
+			vertex v1 = top[i];
+			glNormal3f(0, 1, 0);
+			glVertex3f(v1.x, v1.y, v1.z);
+		}
+
+		for (int i = 0; i < bottom.size(); i++){
+			vertex v1 = bottom[i];
+			glNormal3f(0, -1, 0);
+			glVertex3f(v1.x, v1.y, v1.z);
+		}
+
+		for (int i = 0; i < sides.size(); i++){
+			vertex v1 = sides[i];
+			glNormal3f(v1.x, 0, v1.z);
+			glVertex3f(v1.x, v1.y, v1.z);
+		}
+		glEnd();
+	};
+
+
+private:
+};
+
+#endif
